@@ -35,10 +35,6 @@ func main() {
 }
 
 func matchLine(line []byte, pattern string) (bool, error) {
-	if utf8.RuneCountInString(pattern) != 1 {
-		return false, fmt.Errorf("unsupported pattern: %q", pattern)
-	}
-
 	if pattern == "\\d"{
 		for _,value := range line {
 			if isDigit(value){
@@ -47,6 +43,11 @@ func matchLine(line []byte, pattern string) (bool, error) {
 		}
 		return false,nil
 	}else{
+		
+		if utf8.RuneCountInString(pattern) != 1 {
+			return false, fmt.Errorf("unsupported pattern: %q", pattern)
+		}
+
 		ok := bytes.ContainsAny(line, pattern)
 		return ok, nil
 	}
