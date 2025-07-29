@@ -8,9 +8,6 @@ import (
 	"unicode/utf8"
 )
 
-// Ensures gofmt doesn't remove the "bytes" import above (feel free to remove this!)
-var _ = bytes.ContainsAny
-
 // Usage: echo <input_text> | your_program.sh -E <pattern>
 func main() {
 	if len(os.Args) < 3 || os.Args[1] != "-E" {
@@ -35,8 +32,6 @@ func main() {
 	if !ok {
 		os.Exit(1)
 	}
-
-	// default exit code is 0 which means success
 }
 
 func matchLine(line []byte, pattern string) (bool, error) {
@@ -44,12 +39,21 @@ func matchLine(line []byte, pattern string) (bool, error) {
 		return false, fmt.Errorf("unsupported pattern: %q", pattern)
 	}
 
-	var ok bool
+	if pattern == "\\d"{
+		for _,value := range line {
+			if isDigit(value){
+				return true,nil
+			}
+		}
+		return false,nil
+	}else{
+		ok := bytes.ContainsAny(line, pattern)
+		return ok, nil
+	}
 
-	// You can use print statements as follows for debugging, they'll be visible when running tests.
-	fmt.Fprintln(os.Stderr, "Logs from your program will appear here!")
+}
 
-	ok = bytes.ContainsAny(line, pattern)
-
-	return ok, nil
+func isDigit(value byte) bool {
+	numbers := []byte{0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39}
+	return bytes.ContainsAny(numbers,string(value))
 }
